@@ -1,0 +1,18 @@
+{
+    "name": "yidas/socket",
+    "description": "PHP socket",
+    "keywords": ["PHP", "socket", "socket lib", "socket_create"],
+    "homepage": "https://github.com/yidas/php-socket",
+    "type": "library",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/yidas/php-socket/issues",
+        "source": "https://github.com/yidas/php-socket"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "yidas\\socket\\": "src"
+        }
+    }
+}
