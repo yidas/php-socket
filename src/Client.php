@@ -28,6 +28,13 @@ class Client
         'domain' => null,
     ];
 
+    protected $protocolWhiteList = [
+        'tcp',
+        'ssl',
+        'http',
+        'https',
+    ];
+
     /**
      * Construction
      */
@@ -65,7 +72,7 @@ class Client
         
         $config = array_merge($this->defaultConfig, $config);
         $context = stream_context_create($opts);
-        $protocol = ($config['protocol']) ? "{$config['protocol']}://" : '';
+        $protocol = ($config['protocol']) && in_array($config['protocol'], $this->protocolWhiteList) ? "{$config['protocol']}://" : '';
         $address = "{$protocol}{$config['host']}:{$config['port']}";
 
         return $this->stream_socket_client($address, $errorCode, $errorMsg, $config['timeout'], STREAM_CLIENT_CONNECT, $context);
@@ -175,11 +182,11 @@ class Client
         if (!$cryptoMethod) {
             $cryptoMethod = STREAM_CRYPTO_METHOD_TLS_CLIENT;
             if (defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT')) {
-                $crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
-                $crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
+                $cryptoMethod |= STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+                $cryptoMethod |= STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
             }
             if (defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT')) {
-                $crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT;
+                $cryptoMethod |= STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT;
             }
         }
         
