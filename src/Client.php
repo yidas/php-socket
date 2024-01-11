@@ -25,16 +25,17 @@ class Client
         'host' => '',
         'port' => '',
         'timeout' => 15,
+        'domain' => null,
     ];
 
     /**
      * Construction
      */
-    public function __construct($config = []) {
+    public function __construct($config = [], $opts = []) {
         
         if ($config) {
             
-            $this->connect($config);
+            $this->connect($config, $opts);
         }
 
         // return $this;
@@ -45,14 +46,29 @@ class Client
      * 
      * @return object Resource
      */
-    public function connect($config) {
+    public function connect($config, $opts = []) {
+
+        // Domain setting
+        if (!isset($opts['socket']['bindto']) && $config['domain']) {
+
+            switch ($config['domain']) {
+                case AF_INET6:
+                    $opts['socket']['bindto'] = '[::]:0';
+                    break;
+                
+                case AF_INET:
+                default:
+                    $opts['socket']['bindto'] = '0.0.0.0:0';
+                    break;
+            }
+        }
         
         $config = array_merge($this->defaultConfig, $config);
-
+        $context = stream_context_create($opts);
         $protocol = ($config['protocol']) ? "{$config['protocol']}://" : '';
         $address = "{$protocol}{$config['host']}:{$config['port']}";
 
-        return $this->stream_socket_client($address, $errorCode, $errorMsg, $config['timeout']);
+        return $this->stream_socket_client($address, $errorCode, $errorMsg, $config['timeout'], STREAM_CLIENT_CONNECT, $context);
     }
 
     /**
