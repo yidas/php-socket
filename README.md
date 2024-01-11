@@ -18,6 +18,7 @@ try {
         'protocol' => 'tcp',
         'host' => 'smtp.your.com',
         'port' => '25',
+        // 'domain' => AF_INET,
     ]);
 
 } catch (Exception $e) {
@@ -42,7 +43,7 @@ $socket = new \yidas\socket\Client();
 
 try {
 
-  $socket->stream_socket_client('smtp.your.com:25', $errorCode, $errorMsg, 15);
+  $socket->stream_socket_client('tcp://smtp.your.com:25', $errorCode, $errorMsg, 15);
 
 } catch (Exception $e) {
     
